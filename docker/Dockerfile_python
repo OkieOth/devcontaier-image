@@ -1,0 +1,8 @@
+FROM ghcr.io/okieoth/devcont-base
+
+RUN apt-get update && \
+  apt install python3 pip python3-venv
+
+
+
+RUN rm -rf /var/cache/apt/archives /var/lib/apt/lists/*

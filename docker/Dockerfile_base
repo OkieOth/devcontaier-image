@@ -1,0 +1,27 @@
+FROM debian:trixie-slim
+
+RUN apt-get update && \
+  apt install -y iputils-ping net-tools curl procps vim tcpdump telnet traceroute
+
+# Download the tar.gz file and checksum file
+RUN curl -LO https://github.com/zellij-org/zellij/releases/download/v0.39.2/zellij-x86_64-unknown-linux-musl.tar.gz && \
+  curl -LO https://github.com/zellij-org/zellij/releases/download/v0.39.2/zellij-x86_64-unknown-linux-musl.sha256sum && \
+  tar -xzf zellij-x86_64-unknown-linux-musl.tar.gz && \
+  sha256sum zellij > zellij.sha256sum && \
+  sha256sum -c zellij.sha256sum zellij-x86_64-unknown-linux-musl.sha256sum
+
+RUN mv zellij /usr/bin/ 
+
+RUN rm -f *.tar.gz
+RUN rm -f *.sha256sum
+
+RUN rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
+
+WORKDIR app
+
+ADD res/loop_endless.sh loop_endless.sh 
+RUN chmod o+x loop_endless.sh 
+
+
+
+CMD ./loop_endless.sh
